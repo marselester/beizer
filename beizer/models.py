@@ -15,3 +15,19 @@ class Transition(object):
         """
         self.probability = probability
         self.expectation = expectation
+
+
+class TransitionMatrix(object):
+    """Transition matrix."""
+    def __init__(self, matrix):
+        """Initializes transition matrix."""
+        self._matrix = matrix
+
+    def loop_exists(self):
+        """Returns True if loop exists in transition matrix."""
+
+    def exclude_first_loop(self):
+        """Excludes loop from transition matrix."""
+
+    def exclude_last_vertex(self):
+        """Excludes last vertex from transition matrix."""
