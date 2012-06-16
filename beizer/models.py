@@ -23,6 +23,9 @@ class TransitionMatrix(object):
         """Initializes transition matrix."""
         self._matrix = matrix
 
+    def has_only_source_and_drain(self):
+        """Returns True if matrix has got only source and drain."""
+
     def loop_exists(self):
         """Returns True if loop exists in transition matrix."""
 
