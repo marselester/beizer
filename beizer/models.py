@@ -19,9 +19,17 @@ class Transition(object):
 
 class TransitionMatrix(object):
     """Transition matrix."""
-    def __init__(self, matrix):
+    def __init__(self, src_matrix):
         """Initializes transition matrix."""
-        self._matrix = matrix
+        self._matrix = []
+        for row_src in src_matrix:
+            row_of_transitions = []
+            for column_src in row_src:
+                probability, expectation = column_src
+                transition = Transition(probability=probability,
+                                        expectation=expectation)
+                row_of_transitions.append(transition)
+            self._matrix.append(row_of_transitions)
 
     def has_only_source_and_drain(self):
         """Returns True if matrix has got only source and drain."""
