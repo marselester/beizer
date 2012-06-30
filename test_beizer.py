@@ -21,6 +21,7 @@ class MatrixInitTest(unittest.TestCase):
             [(0.6, 10), None],
             [None]
         ]
+        self.assertRaises(MatrixInitError, TransitionMatrix, (matrix))
 
     def test_matrix_has_only_source(self):
         matrix = [
