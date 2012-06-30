@@ -26,7 +26,7 @@ class MatrixInitTest(unittest.TestCase):
         matrix = [
             [None]
         ]
-        self.assertEqual(TransitionMatrix(matrix), '[[None]]')
+        self.assertEqual(repr(TransitionMatrix(matrix)), '[[None]]')
 
 if __name__ == '__main__':
     unittest.main()
