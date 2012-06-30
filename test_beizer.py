@@ -2,6 +2,7 @@
 import unittest
 
 from beizer.models import TransitionMatrix
+from beizer.exceptions import MatrixInitError
 
 
 class MatrixInitTest(unittest.TestCase):
@@ -9,7 +10,8 @@ class MatrixInitTest(unittest.TestCase):
         self.assertRaises(TypeError, TransitionMatrix)
 
     def test_argument_is_not_list(self):
-        pass
+        matrix = 'some wrong value'
+        self.assertRaises(MatrixInitError, TransitionMatrix, (matrix))
 
     def test_empty_list(self):
         pass
