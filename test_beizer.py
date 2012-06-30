@@ -6,7 +6,7 @@ from beizer.models import TransitionMatrix
 
 class MatrixInitTest(unittest.TestCase):
     def test_init_takes_at_least_two_arguments(self):
-        pass
+        self.assertRaises(TypeError, TransitionMatrix)
 
     def test_argument_is_not_list(self):
         pass
