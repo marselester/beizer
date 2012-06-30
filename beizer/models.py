@@ -18,6 +18,9 @@ class Transition(object):
         self.probability = probability
         self.expectation = expectation
 
+    def __repr__(self):
+        return "P={0}, E={1}".format(self.probability, self.expectation)
+
 
 class TransitionMatrix(object):
     """Transition matrix."""
@@ -35,6 +38,8 @@ class TransitionMatrix(object):
                 row_of_transitions.append(transition)
             self._matrix.append(row_of_transitions)
 
+    def __repr__(self):
+        return repr(self._matrix)
 
     def _extract_transition(self, obj_with_two_items):
         """Returns transition object extracted from iterable object.
