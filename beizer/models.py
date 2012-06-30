@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from .exceptions import MatrixInitError
+from .utils import matrix_is_quadratic
 
 
 class Transition(object):
@@ -29,6 +30,8 @@ class TransitionMatrix(object):
         """Initializes transition matrix."""
         if not isinstance(src_matrix, list):
             raise MatrixInitError('expected a list object')
+        if not matrix_is_quadratic(src_matrix):
+            raise MatrixInitError('matrix has to be quadratic')
 
         self._matrix = []
         for row_src in src_matrix:
