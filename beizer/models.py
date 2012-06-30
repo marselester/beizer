@@ -4,6 +4,7 @@
 class Transition(object):
     """Transition with probability in which system spend or allocate resource.
     """
+
     def __init__(self, probability=0.0, expectation=None):
         """Initializes transition.
 
@@ -19,6 +20,7 @@ class Transition(object):
 
 class TransitionMatrix(object):
     """Transition matrix."""
+
     def __init__(self, src_matrix):
         """Initializes transition matrix."""
         self._matrix = []
