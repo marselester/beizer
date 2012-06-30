@@ -15,6 +15,7 @@ class MatrixInitTest(unittest.TestCase):
 
     def test_empty_list(self):
         matrix = []
+        self.assertEqual(repr(TransitionMatrix(matrix)), '[]')
 
     def test_matrix_is_not_quadratic(self):
         matrix = [
