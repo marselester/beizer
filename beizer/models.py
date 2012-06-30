@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from .exceptions import MatrixInitError
 
 
 class Transition(object):
@@ -23,6 +24,9 @@ class TransitionMatrix(object):
 
     def __init__(self, src_matrix):
         """Initializes transition matrix."""
+        if not isinstance(src_matrix, list):
+            raise MatrixInitError('expected a list object')
+
         self._matrix = []
         for row_src in src_matrix:
             row_of_transitions = []
