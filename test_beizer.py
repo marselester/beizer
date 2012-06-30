@@ -14,22 +14,19 @@ class MatrixInitTest(unittest.TestCase):
         self.assertRaises(MatrixInitError, TransitionMatrix, (matrix))
 
     def test_empty_list(self):
-        pass
+        matrix = []
 
     def test_matrix_is_not_quadratic(self):
-        pass
+        matrix = [
+            [(0.6, 10), None],
+            [None]
+        ]
 
     def test_matrix_has_only_source(self):
-        pass
-
-    def test_matrix_has_only_source_and_drain(self):
-        pass
-
-    def test_matrix_has_source_and_drain_and_loop(self):
-        pass
-
-    def test_matrix_has_one_loop_and_seven_transitions(self):
-        pass
+        matrix = [
+            [None]
+        ]
+        self.assertEqual(TransitionMatrix(matrix), '[[None]]')
 
 if __name__ == '__main__':
     unittest.main()
