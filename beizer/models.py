@@ -31,11 +31,24 @@ class TransitionMatrix(object):
         for row_src in src_matrix:
             row_of_transitions = []
             for column_src in row_src:
-                probability, expectation = column_src
-                transition = Transition(probability=probability,
-                                        expectation=expectation)
+                transition = self._extract_transition(column_src)
                 row_of_transitions.append(transition)
             self._matrix.append(row_of_transitions)
+
+
+    def _extract_transition(self, obj_with_two_items):
+        """Returns transition object extracted from iterable object.
+
+        If object does not contain two items then function returns None.
+        """
+        try:
+            probability, expectation = obj_with_two_items
+        except TypeError:
+            transition = None
+        else:
+            transition = Transition(probability=probability,
+                                    expectation=expectation)
+        return transition
 
     def has_only_source_and_drain(self):
         """Returns True if matrix has got only source and drain."""
