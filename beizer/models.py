@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .exceptions import MatrixInitError
+from .exceptions import MatrixInitError, LoopExcludeError
 from .utils import matrix_is_quadratic
 
 
@@ -69,6 +69,24 @@ class TransitionMatrix(object):
 
     def exclude_first_loop(self):
         """Excludes loop from transition matrix."""
+        row_loop = column_loop = self._index_of_first_loop()
+        try:
+            loop = self._matrix[row_loop][column_loop]
+        except (TypeError, IndexError):
+            raise LoopExcludeError('loop does not found')
+        # Loop delete.
+        self._matrix[row_loop][column_loop] = None
+        # Для исключения петли необходимо поделить вероятности передач,
+        # которые находятся на одной строке с петлей, на вероятность петли.
+        for (trans_index, trans) in enumerate(self._matrix[row_loop]):
+            if trans is not None:
+                self._matrix[row_loop][trans_index] = self._exclude_loop(
+                    trans, loop)
+
+    def _exclude_loop(self, transition, loop):
+        probability = transition.probability / (1 - loop.probability)
+        expectation = transition.expectation + loop.expectation
+        return Transition(probability=probability, expectation=expectation)
 
     def exclude_last_vertex(self):
         """Excludes last vertex from transition matrix."""
