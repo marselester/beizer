@@ -8,3 +8,10 @@ class BeizerException(Exception):
 class MatrixInitError(BeizerException):
     """Errors of matrix initialization."""
 
+
+class MatrixReduceError(BeizerException):
+    """Matrix size reducing errors."""
+
+
+class LoopExcludeError(MatrixReduceError):
+    """Errors excluding a loop."""
