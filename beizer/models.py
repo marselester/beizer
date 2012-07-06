@@ -69,3 +69,9 @@ class TransitionMatrix(object):
 
     def exclude_last_vertex(self):
         """Excludes last vertex from transition matrix."""
+
+    def _index_of_first_loop(self):
+        """Returns index of first loop in transition matrix."""
+        for (row_index, row_of_transitions) in enumerate(self._matrix):
+            if row_of_transitions[row_index] is not None:
+                return row_index
