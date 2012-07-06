@@ -95,6 +95,32 @@ class TransitionMatrix(object):
         # пересечении строки и столбца, сложив его с передачей принимающей
         # ячейки. Например, если в последнем столбце две передачи, а в
         # последней строке три передачи, то получим шесть произведений.
+        index_of_last_column = index_of_last_row = len(self._matrix) - 1
+        last_column = [row[index_of_last_column] for row in self._matrix]
+        last_row = self._matrix[index_of_last_row]
+        for (column_index, column_trans) in enumerate(last_column):
+            for (row_index, row_trans) in enumerate(last_row):
+                if column_trans is not None and row_trans is not None:
+                    host_cell = self._matrix[row_index][column_index]
+                    self._matrix[row_index][column_index] = self._exclude_trans(
+                        column_trans, row_trans, host_cell)
+        # Delete last row from transition matrix.
+        self._matrix.pop()
+        # Delete last column from transition matrix.
+        for row in self._matrix:
+            row.pop()
+
+    def _exclude_trans(self, column_trans, row_trans, host_cell):
+        if host_cell is None:
+            host_cell_probability = 0
+            host_cell_expectation = 0
+        else:
+            host_cell_probability = host_cell.probability
+            host_cell_expectation = host_cell.expectation
+        probability = (column_trans.probability * row_trans.probability
+                       + host_cell_probability)
+        expectation = 0 # dummy
+        return Transition(probability=probability, expectation=expectation)
 
     def _index_of_first_loop(self):
         """Returns index of first loop in transition matrix."""
