@@ -20,7 +20,7 @@ class Transition(object):
         self.expectation = expectation
 
     def __repr__(self):
-        return "P={0}, E={1}".format(self.probability, self.expectation)
+        return "(P={0}, E={1})".format(self.probability, self.expectation)
 
 
 class TransitionMatrix(object):
