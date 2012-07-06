@@ -41,5 +41,15 @@ class ExcludeFirstLoopTest(unittest.TestCase):
         trans_matrix = TransitionMatrix(matrix)
         self.assertRaises(LoopExcludeError, trans_matrix.exclude_first_loop)
 
+    def test_matrix_2x2_source_has_loop(self):
+        matrix = [
+            [(0.6, 10), (0.4, 7)],
+            [None, None]
+        ]
+        trans_matrix = TransitionMatrix(matrix)
+        trans_matrix.exclude_first_loop()
+        self.assertEqual(repr(trans_matrix),
+                         '[[None, (P=1.0, E=17)], [None, None]]')
+
 if __name__ == '__main__':
     unittest.main()
