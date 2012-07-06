@@ -2,7 +2,7 @@
 import unittest
 
 from beizer.models import TransitionMatrix
-from beizer.exceptions import MatrixInitError
+from beizer.exceptions import MatrixInitError, LoopExcludeError
 
 
 class MatrixInitTest(unittest.TestCase):
@@ -29,6 +29,17 @@ class MatrixInitTest(unittest.TestCase):
             [None]
         ]
         self.assertEqual(repr(TransitionMatrix(matrix)), '[[None]]')
+
+
+class ExcludeFirstLoopTest(unittest.TestCase):
+
+    def test_matrix_2x2_has_not_got_loop(self):
+        matrix = [
+            [None, (0.4, 7)],
+            [None, None]
+        ]
+        trans_matrix = TransitionMatrix(matrix)
+        self.assertRaises(LoopExcludeError, trans_matrix.exclude_first_loop)
 
 if __name__ == '__main__':
     unittest.main()
