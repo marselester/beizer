@@ -90,6 +90,11 @@ class TransitionMatrix(object):
 
     def exclude_last_vertex(self):
         """Excludes last vertex from transition matrix."""
+        # Для исключения узла необходимо умножить передачу из последнего
+        # столбца на передачу из последней строки. Произведение поместить на
+        # пересечении строки и столбца, сложив его с передачей принимающей
+        # ячейки. Например, если в последнем столбце две передачи, а в
+        # последней строке три передачи, то получим шесть произведений.
 
     def _index_of_first_loop(self):
         """Returns index of first loop in transition matrix."""
