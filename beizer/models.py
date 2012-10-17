@@ -22,6 +22,15 @@ class Transition(object):
     def __repr__(self):
         return "(P={0}, E={1})".format(self.probability, self.expectation)
 
+    def __getitem__(self, key):
+        if key == 0:
+            return self.probability
+        elif key == 1:
+            return self.expectation
+        else:
+            raise IndexError('key has to be 0 for probability'
+                             ' or 1 for expectation')
+
 
 class TransitionMatrix(object):
     """Transition matrix."""
