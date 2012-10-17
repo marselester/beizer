@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from beizer.models import TransitionMatrix
+from beizer.models import TransitionMatrix, Transition, _exclude_trans
 from beizer.exceptions import MatrixInitError, LoopExcludeError
 
 
@@ -53,8 +53,39 @@ class ExcludeFirstLoopTest(unittest.TestCase):
         # expectation is 22.0 = 7 + ((10 * 0.6) / (1 - 0.6))
         self.assertEqual(repr(trans_matrix),
                          '[[None, (P=1.0, E=22.0)], [None, None]]')
+
+
+class ExlcudeLastVertexTest(unittest.TestCase):
+
+    def test_matrix_4x4_without_loops(self):
+        _ = None
+        a = Transition(0.4, 7)
+        b = Transition(0.6, 10)
+        d = Transition(0.5, 7)
+        f = Transition(0.5, 10)
+        e = Transition(0.7, 10)
+        z = Transition(0.3, 7)
+
+        trans_matrix = TransitionMatrix([
+            [_, _, b, a],
+            [_, _, _, _],
+            [_, f, _, d],
+            [_, e, z, _]
+        ])
+
+        cell_1_2 = _exclude_trans(column_trans=a, row_trans=e, host_cell=_)
+        cell_1_3 = _exclude_trans(column_trans=a, row_trans=z, host_cell=b)
+        cell_3_2 = _exclude_trans(column_trans=d, row_trans=e, host_cell=f)
+        cell_3_3 = _exclude_trans(column_trans=d, row_trans=z, host_cell=_)
+        trans_matrix_after_excluding = TransitionMatrix([
+            [_, cell_1_2, cell_1_3],
+            [_, _, _],
+            [_, cell_3_2, cell_3_3],
+        ])
+
+        trans_matrix.exclude_last_vertex()
         self.assertEqual(repr(trans_matrix),
-                         '[[None, (P=1.0, E=17)], [None, None]]')
+                         repr(trans_matrix_after_excluding))
 
 if __name__ == '__main__':
     unittest.main()
