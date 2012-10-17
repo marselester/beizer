@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from .exceptions import MatrixInitError, LoopExcludeError
-from .utils import matrix_is_quadratic
+from .utils import (matrix_is_quadratic, last_column_of_matrix,
+                    last_row_of_matrix)
 
 
 class Transition(object):
@@ -99,9 +100,8 @@ class TransitionMatrix(object):
         # пересечении строки и столбца, сложив его с передачей принимающей
         # ячейки. Например, если в последнем столбце две передачи, а в
         # последней строке три передачи, то получим шесть произведений.
-        index_of_last_column = index_of_last_row = len(self._matrix) - 1
-        last_column = [row[index_of_last_column] for row in self._matrix]
-        last_row = self._matrix[index_of_last_row]
+        last_column = last_column_of_matrix(self._matrix)
+        last_row = last_row_of_matrix(self._matrix)
         for (column_index, column_trans) in enumerate(last_column):
             for (row_index, row_trans) in enumerate(last_row):
                 if column_trans is not None and row_trans is not None:
