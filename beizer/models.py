@@ -96,8 +96,8 @@ class TransitionMatrix(object):
         for (column_index, column_trans) in enumerate(last_column):
             for (row_index, row_trans) in enumerate(last_row):
                 if column_trans is not None and row_trans is not None:
-                    host_cell = self._matrix[row_index][column_index]
-                    self._matrix[row_index][column_index] = _exclude_trans(
+                    host_cell = self._matrix[column_index][row_index]
+                    self._matrix[column_index][row_index] = _exclude_trans(
                         column_trans, row_trans, host_cell)
         # Delete last row from transition matrix.
         self._matrix.pop()
