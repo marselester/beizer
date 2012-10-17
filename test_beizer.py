@@ -6,6 +6,7 @@ from beizer.exceptions import MatrixInitError, LoopExcludeError
 
 
 class MatrixInitTest(unittest.TestCase):
+
     def test_init_takes_at_least_two_arguments(self):
         self.assertRaises(TypeError, TransitionMatrix)
 
@@ -48,6 +49,10 @@ class ExcludeFirstLoopTest(unittest.TestCase):
         ]
         trans_matrix = TransitionMatrix(matrix)
         trans_matrix.exclude_first_loop()
+        # probability is 1.0 = 0.4 / (1 - 0.6)
+        # expectation is 22.0 = 7 + ((10 * 0.6) / (1 - 0.6))
+        self.assertEqual(repr(trans_matrix),
+                         '[[None, (P=1.0, E=22.0)], [None, None]]')
         self.assertEqual(repr(trans_matrix),
                          '[[None, (P=1.0, E=17)], [None, None]]')
 
