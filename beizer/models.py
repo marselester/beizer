@@ -121,7 +121,13 @@ class TransitionMatrix(object):
             host_cell_expectation = host_cell.expectation
         probability = (column_trans.probability * row_trans.probability
                        + host_cell_probability)
-        expectation = 0 # dummy
+        expectation = (
+            (
+                host_cell_probability * host_cell_expectation
+                + column_trans.probability * row_trans.probability
+                * (column_trans.expectation + row_trans.expectation)
+            ) / probability
+        )
         return Transition(probability=probability, expectation=expectation)
 
     def _index_of_first_loop(self):
