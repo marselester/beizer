@@ -85,7 +85,9 @@ class TransitionMatrix(object):
 
     def _exclude_loop(self, transition, loop):
         probability = transition.probability / (1 - loop.probability)
-        expectation = transition.expectation + loop.expectation
+        expectation = transition.expectation + (
+            (loop.expectation * loop.probability) / (1 - loop.probability)
+        )
         return Transition(probability=probability, expectation=expectation)
 
     def exclude_last_vertex(self):
