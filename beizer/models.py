@@ -80,15 +80,8 @@ class TransitionMatrix(object):
         # которые находятся на одной строке с петлей, на вероятность петли.
         for (trans_index, trans) in enumerate(self._matrix[row_loop]):
             if trans is not None:
-                self._matrix[row_loop][trans_index] = self._exclude_loop(
-                    trans, loop)
-
-    def _exclude_loop(self, transition, loop):
-        probability = transition.probability / (1 - loop.probability)
-        expectation = transition.expectation + (
-            (loop.expectation * loop.probability) / (1 - loop.probability)
-        )
-        return Transition(probability=probability, expectation=expectation)
+                self._matrix[row_loop][trans_index] = _exclude_loop(trans,
+                                                                    loop)
 
     def exclude_last_vertex(self):
         """Excludes last vertex from transition matrix."""
@@ -104,7 +97,7 @@ class TransitionMatrix(object):
             for (row_index, row_trans) in enumerate(last_row):
                 if column_trans is not None and row_trans is not None:
                     host_cell = self._matrix[row_index][column_index]
-                    self._matrix[row_index][column_index] = self._exclude_trans(
+                    self._matrix[row_index][column_index] = _exclude_trans(
                         column_trans, row_trans, host_cell)
         # Delete last row from transition matrix.
         self._matrix.pop()
@@ -112,26 +105,35 @@ class TransitionMatrix(object):
         for row in self._matrix:
             row.pop()
 
-    def _exclude_trans(self, column_trans, row_trans, host_cell):
-        if host_cell is None:
-            host_cell_probability = 0
-            host_cell_expectation = 0
-        else:
-            host_cell_probability = host_cell.probability
-            host_cell_expectation = host_cell.expectation
-        probability = (column_trans.probability * row_trans.probability
-                       + host_cell_probability)
-        expectation = (
-            (
-                host_cell_probability * host_cell_expectation
-                + column_trans.probability * row_trans.probability
-                * (column_trans.expectation + row_trans.expectation)
-            ) / probability
-        )
-        return Transition(probability=probability, expectation=expectation)
-
     def _index_of_first_loop(self):
         """Returns index of first loop in transition matrix."""
         for (row_index, row_of_transitions) in enumerate(self._matrix):
             if row_of_transitions[row_index] is not None:
                 return row_index
+
+
+def _exclude_loop(transition, loop):
+    probability = transition.probability / (1 - loop.probability)
+    expectation = transition.expectation + (
+        (loop.expectation * loop.probability) / (1 - loop.probability)
+    )
+    return Transition(probability=probability, expectation=expectation)
+
+
+def _exclude_trans(column_trans, row_trans, host_cell=None):
+    if host_cell is None:
+        host_cell_probability = 0
+        host_cell_expectation = 0
+    else:
+        host_cell_probability = host_cell.probability
+        host_cell_expectation = host_cell.expectation
+    probability = (column_trans.probability * row_trans.probability
+                   + host_cell_probability)
+    expectation = (
+        (
+            host_cell_probability * host_cell_expectation
+            + column_trans.probability * row_trans.probability
+            * (column_trans.expectation + row_trans.expectation)
+        ) / probability
+    )
+    return Transition(probability=probability, expectation=expectation)
