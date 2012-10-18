@@ -3,6 +3,7 @@ import unittest
 
 from beizer.models import TransitionMatrix, Transition, _exclude_trans
 from beizer.exceptions import MatrixInitError, LoopExcludeError
+_ = None
 
 
 class MatrixInitTest(unittest.TestCase):
@@ -19,15 +20,16 @@ class MatrixInitTest(unittest.TestCase):
         self.assertEqual(repr(TransitionMatrix(matrix)), '[]')
 
     def test_matrix_is_not_quadratic(self):
+        a = (0.6, 10)
         matrix = [
-            [(0.6, 10), None],
-            [None]
+            [a, _],
+            [_]
         ]
         self.assertRaises(MatrixInitError, TransitionMatrix, (matrix))
 
     def test_matrix_has_only_source(self):
         matrix = [
-            [None]
+            [_]
         ]
         self.assertEqual(repr(TransitionMatrix(matrix)), '[[None]]')
 
@@ -35,17 +37,20 @@ class MatrixInitTest(unittest.TestCase):
 class ExcludeFirstLoopTest(unittest.TestCase):
 
     def test_matrix_2x2_has_not_got_loop(self):
+        a = (0.4, 7)
         matrix = [
-            [None, (0.4, 7)],
-            [None, None]
+            [_, a],
+            [_, _]
         ]
         trans_matrix = TransitionMatrix(matrix)
         self.assertRaises(LoopExcludeError, trans_matrix.exclude_first_loop)
 
     def test_matrix_2x2_source_has_loop(self):
+        a = (0.6, 10)
+        b = (0.4, 7)
         matrix = [
-            [(0.6, 10), (0.4, 7)],
-            [None, None]
+            [a, b],
+            [_, _]
         ]
         trans_matrix = TransitionMatrix(matrix)
         trans_matrix.exclude_first_loop()
@@ -58,7 +63,6 @@ class ExcludeFirstLoopTest(unittest.TestCase):
 class ExlcudeLastVertexTest(unittest.TestCase):
 
     def test_matrix_4x4_without_loops(self):
-        _ = None
         a = Transition(0.4, 7)
         b = Transition(0.6, 10)
         d = Transition(0.5, 7)
