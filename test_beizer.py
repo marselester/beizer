@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import unittest
+from decimal import Decimal as D
 
 from beizer.models import TransitionMatrix, Transition, _exclude_trans
 from beizer.exceptions import MatrixInitError, LoopExcludeError
+
 _ = None
 
 
@@ -46,18 +48,18 @@ class ExcludeFirstLoopTest(unittest.TestCase):
         self.assertRaises(LoopExcludeError, trans_matrix.exclude_first_loop)
 
     def test_matrix_2x2_source_has_loop(self):
-        a = (0.6, 10)
-        b = (0.4, 7)
+        a = (D('0.6'), 10)
+        b = (D('0.4'), 7)
         matrix = [
             [a, b],
             [_, _]
         ]
         trans_matrix = TransitionMatrix(matrix)
         trans_matrix.exclude_first_loop()
-        # probability is 1.0 = 0.4 / (1 - 0.6)
-        # expectation is 22.0 = 7 + ((10 * 0.6) / (1 - 0.6))
+        # Probability is 1.0 = 0.4 / (1 - 0.6)
+        # Expectation is 22.0 = 7 + ((10 * 0.6) / (1 - 0.6))
         self.assertEqual(repr(trans_matrix),
-                         '[[None, (P=1.0, E=22.0)], [None, None]]')
+                         '[[None, (P=1, E=22)], [None, None]]')
 
 
 class ExlcudeLastVertexTest(unittest.TestCase):
