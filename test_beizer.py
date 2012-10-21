@@ -166,5 +166,19 @@ class ExlcudeLastVertexTest(unittest.TestCase):
         self.assertEqual(repr(trans_matrix),
                          repr(trans_matrix_after_excluding))
 
+
+class ExcludeVertexTest(unittest.TestCase):
+
+    def test_host_cell_is_empty(self):
+        column_trans = Transition(D('0.6'), D('20'))
+        row_trans = Transition(D('0.8'), D('5'))
+        # Probability is c.P * r.P = 0.6 * 0.8 = 0.48
+        # Expectation is c.E + r.E = 25
+        expected_intersection = Transition(D('0.48'), D('25'))
+
+        intersection = transform_trans_while_excluding_vertex(
+            column_trans, row_trans)
+        self.assertEqual(intersection, expected_intersection)
+
 if __name__ == '__main__':
     unittest.main()
