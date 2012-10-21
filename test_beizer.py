@@ -37,6 +37,9 @@ class MatrixInitTest(unittest.TestCase):
         ]
         self.assertEqual(repr(TransitionMatrix(matrix)), '[[None]]')
 
+    def test_sum_of_probabilities_is_equal_to_one(self):
+        pass
+
 
 class ExcludeFirstLoopTest(unittest.TestCase):
 
@@ -128,6 +131,12 @@ class ExcludeFirstLoopTest(unittest.TestCase):
     def test_matrix_structure_after_vertical_transitions_excluding(self):
         pass
 
+    def test_values_after_vertical_transitions_excluding(self):
+        pass
+
+    def test_sum_of_probabilities_is_equal_to_one(self):
+        pass
+
 
 class ExlcudeLastVertexTest(unittest.TestCase):
 
@@ -165,6 +174,9 @@ class ExlcudeLastVertexTest(unittest.TestCase):
         trans_matrix.exclude_last_vertex()
         self.assertEqual(repr(trans_matrix),
                          repr(trans_matrix_after_excluding))
+
+    def test_sum_of_probabilities_is_equal_to_one(self):
+        pass
 
 
 class ExcludeVertexTest(unittest.TestCase):
