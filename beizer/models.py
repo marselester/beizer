@@ -94,8 +94,8 @@ class TransitionMatrix(object):
         # которые находятся на одной строке с петлей, на вероятность петли.
         for (trans_index, trans) in enumerate(self._matrix[row_loop]):
             if trans is not None:
-                self._matrix[row_loop][trans_index] = _exclude_loop(trans,
-                                                                    loop)
+                trans_ = transform_trans_while_excluding_loop(trans, loop)
+                self._matrix[row_loop][trans_index] = trans_
 
     def exclude_last_vertex(self):
         """Excludes last vertex from transition matrix."""
@@ -110,8 +110,9 @@ class TransitionMatrix(object):
             for (row_index, row_trans) in enumerate(last_row):
                 if column_trans is not None and row_trans is not None:
                     host_cell = self._matrix[column_index][row_index]
-                    self._matrix[column_index][row_index] = _exclude_trans(
+                    trans_ = transform_trans_while_excluding_vertex(
                         column_trans, row_trans, host_cell)
+                    self._matrix[column_index][row_index] = trans_
         # Delete last row from transition matrix.
         self._matrix.pop()
         # Delete last column from transition matrix.
@@ -125,7 +126,8 @@ class TransitionMatrix(object):
                 return row_index
 
 
-def _exclude_loop(transition, loop):
+def transform_trans_while_excluding_loop(transition, loop):
+    """Преобразует передачу ``transition`` при исключении петли."""
     probability = transition.probability / (1 - loop.probability)
     expectation = transition.expectation + (
         (loop.expectation * loop.probability) / (1 - loop.probability)
@@ -133,7 +135,9 @@ def _exclude_loop(transition, loop):
     return Transition(probability=probability, expectation=expectation)
 
 
-def _exclude_trans(column_trans, row_trans, host_cell=None):
+def transform_trans_while_excluding_vertex(column_trans, row_trans,
+                                           host_cell=None):
+    """Преобразует передачу ``host_cell`` при исключении вершины."""
     if host_cell is None:
         host_cell_probability = 0
         host_cell_expectation = 0

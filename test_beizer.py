@@ -2,7 +2,8 @@
 import unittest
 from decimal import Decimal as D
 
-from beizer.models import TransitionMatrix, Transition, _exclude_trans
+from beizer.models import (TransitionMatrix, Transition,
+                           transform_trans_while_excluding_vertex)
 from beizer.exceptions import MatrixInitError, LoopExcludeError
 
 _ = None
@@ -79,10 +80,14 @@ class ExlcudeLastVertexTest(unittest.TestCase):
             [_, e, z, _]
         ])
 
-        cell_1_2 = _exclude_trans(column_trans=a, row_trans=e, host_cell=_)
-        cell_1_3 = _exclude_trans(column_trans=a, row_trans=z, host_cell=b)
-        cell_3_2 = _exclude_trans(column_trans=d, row_trans=e, host_cell=f)
-        cell_3_3 = _exclude_trans(column_trans=d, row_trans=z, host_cell=_)
+        cell_1_2 = transform_trans_while_excluding_vertex(
+            column_trans=a, row_trans=e, host_cell=_)
+        cell_1_3 = transform_trans_while_excluding_vertex(
+            column_trans=a, row_trans=z, host_cell=b)
+        cell_3_2 = transform_trans_while_excluding_vertex(
+            column_trans=d, row_trans=e, host_cell=f)
+        cell_3_3 = transform_trans_while_excluding_vertex(
+            column_trans=d, row_trans=z, host_cell=_)
         trans_matrix_after_excluding = TransitionMatrix([
             [_, cell_1_2, cell_1_3],
             [_, _, _],
