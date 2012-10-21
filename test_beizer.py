@@ -94,6 +94,41 @@ class ExcludeFirstLoopTest(unittest.TestCase):
         self.assertEqual(repr(trans_matrix),
                          repr(trans_matrix_after_excluding))
 
+    def test_values_after_horizontal_transitions_excluding(self):
+        b = Transition(D('0.4'), D('10'))
+        a = Transition(D('0.6'), D('20'))
+
+        f = Transition(D('0.4'), D('10'))
+        g = Transition(D('0.2'), D('5'))
+        d = Transition(D('0.4'), D('15'))
+
+        e = Transition(D('0.8'), D('5'))
+        z = Transition(D('0.2'), D('10'))
+
+        trans_matrix = TransitionMatrix([
+            [_, _, b, a],
+            [_, _, _, _],
+            [_, f, g, d],
+            [_, e, z, _],
+        ])
+        trans_matrix.exclude_first_loop()
+
+        # Probability is f.P / (1 - g.P) = 0.4 / (1 - 0.2) = 0.5
+        # Expectation is f.E + (g.E * g.P) / (1 - g.P)
+        # 10 + (5 * 0.2) / 0.8 = 11.25
+        cell_3_2 = Transition(D('0.5'), D('11.25'))
+        self.assertEqual(trans_matrix._matrix[2][1], cell_3_2)
+
+        # Probability is d / (1 - g) = 0.4 / (1 - 0.2) = 0.5
+        # Expectation is d.E + (g.E * g.P) / (1 - g.P)
+        # 15 + (5 * 0.2) / 0.8 = 16.25
+        cell_3_4 = Transition(D('0.5'), D('16.25'))
+        self.assertEqual(trans_matrix._matrix[2][3], cell_3_4)
+
+    def test_matrix_structure_after_vertical_transitions_excluding(self):
+        pass
+
+
 class ExlcudeLastVertexTest(unittest.TestCase):
 
     def test_matrix_4x4_without_loops(self):
