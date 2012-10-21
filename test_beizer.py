@@ -131,13 +131,15 @@ class ExcludeFirstLoopTest(unittest.TestCase):
 
 class ExlcudeLastVertexTest(unittest.TestCase):
 
-    def test_matrix_4x4_without_loops(self):
-        a = Transition(0.4, 7)
-        b = Transition(0.6, 10)
-        d = Transition(0.5, 7)
-        f = Transition(0.5, 10)
-        e = Transition(0.7, 10)
-        z = Transition(0.3, 7)
+    def test_matrix_structure_without_loops(self):
+        b = Transition(D('0.4'), D('10'))
+        a = Transition(D('0.6'), D('20'))
+
+        f = Transition(D('0.5'), D('10'))
+        d = Transition(D('0.5'), D('15'))
+
+        e = Transition(D('0.8'), D('5'))
+        z = Transition(D('0.2'), D('10'))
 
         trans_matrix = TransitionMatrix([
             [_, _, b, a],
