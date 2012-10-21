@@ -180,5 +180,19 @@ class ExcludeVertexTest(unittest.TestCase):
             column_trans, row_trans)
         self.assertEqual(intersection, expected_intersection)
 
+    def test_host_cell_has_value(self):
+        column_trans = Transition(D('0.6'), D('8'))
+        row_trans = Transition(D('0.2'), D('2'))
+        host_cell = Transition(D('0.4'), D('10'))
+        # Probability is h.P + (c.P * r.P) = 0.4 + (0.6 * 0.2) = 0.52
+        # Expectation is (h.P * h.E + c.P * r.P * (c.E + r.E))
+        #                / (h.P + c.P * r.P)
+        # (0.4 * 10 + 0.6 * 0.2 * (8 + 2)) / 0.52 = 10
+        expected_intersection = Transition(D('0.52'), D('10'))
+
+        intersection = transform_trans_while_excluding_vertex(
+            column_trans, row_trans, host_cell)
+        self.assertEqual(intersection, expected_intersection)
+
 if __name__ == '__main__':
     unittest.main()
