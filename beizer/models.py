@@ -8,13 +8,13 @@ class Transition(object):
     """Transition with probability in which system spend or allocate resource.
     """
 
-    def __init__(self, probability=0.0, expectation=None):
+    def __init__(self, probability, expectation):
         """Initializes transition.
 
         Keyword arguments:
-        probability -- probability of transition to vertex (default 0.0)
+        probability -- probability of transition to vertex.
         expectation -- expected value of resource which spend or allocate in
-        transition to vertex (default None)
+        transition to vertex.
 
         """
         self.probability = probability
@@ -31,6 +31,10 @@ class Transition(object):
         else:
             raise IndexError('key has to be 0 for probability'
                              ' or 1 for expectation')
+
+    def __eq__(self, other):
+        return (self.probability == other.probability and
+                self.expectation == other.expectation)
 
 
 class TransitionMatrix(object):
