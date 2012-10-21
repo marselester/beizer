@@ -179,7 +179,7 @@ class ExlcudeLastVertexTest(unittest.TestCase):
         pass
 
 
-class ExcludeVertexTest(unittest.TestCase):
+class TransformTransitionWhileExcludingVertexTest(unittest.TestCase):
 
     def test_host_cell_is_empty(self):
         column_trans = Transition(D('0.6'), D('20'))
