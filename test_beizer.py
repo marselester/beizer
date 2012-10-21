@@ -37,6 +37,9 @@ class MatrixInitTest(unittest.TestCase):
         ]
         self.assertEqual(repr(TransitionMatrix(matrix)), '[[None]]')
 
+    def test_sum_of_probabilities_is_equal_to_one(self):
+        pass
+
 
 class ExcludeFirstLoopTest(unittest.TestCase):
 
@@ -128,16 +131,24 @@ class ExcludeFirstLoopTest(unittest.TestCase):
     def test_matrix_structure_after_vertical_transitions_excluding(self):
         pass
 
+    def test_values_after_vertical_transitions_excluding(self):
+        pass
+
+    def test_sum_of_probabilities_is_equal_to_one(self):
+        pass
+
 
 class ExlcudeLastVertexTest(unittest.TestCase):
 
-    def test_matrix_4x4_without_loops(self):
-        a = Transition(0.4, 7)
-        b = Transition(0.6, 10)
-        d = Transition(0.5, 7)
-        f = Transition(0.5, 10)
-        e = Transition(0.7, 10)
-        z = Transition(0.3, 7)
+    def test_matrix_structure_without_loops(self):
+        b = Transition(D('0.4'), D('10'))
+        a = Transition(D('0.6'), D('20'))
+
+        f = Transition(D('0.5'), D('10'))
+        d = Transition(D('0.5'), D('15'))
+
+        e = Transition(D('0.8'), D('5'))
+        z = Transition(D('0.2'), D('10'))
 
         trans_matrix = TransitionMatrix([
             [_, _, b, a],
@@ -163,6 +174,37 @@ class ExlcudeLastVertexTest(unittest.TestCase):
         trans_matrix.exclude_last_vertex()
         self.assertEqual(repr(trans_matrix),
                          repr(trans_matrix_after_excluding))
+
+    def test_sum_of_probabilities_is_equal_to_one(self):
+        pass
+
+
+class TransformTransitionWhileExcludingVertexTest(unittest.TestCase):
+
+    def test_host_cell_is_empty(self):
+        column_trans = Transition(D('0.6'), D('20'))
+        row_trans = Transition(D('0.8'), D('5'))
+        # Probability is c.P * r.P = 0.6 * 0.8 = 0.48
+        # Expectation is c.E + r.E = 25
+        expected_intersection = Transition(D('0.48'), D('25'))
+
+        intersection = transform_trans_while_excluding_vertex(
+            column_trans, row_trans)
+        self.assertEqual(intersection, expected_intersection)
+
+    def test_host_cell_has_value(self):
+        column_trans = Transition(D('0.6'), D('8'))
+        row_trans = Transition(D('0.2'), D('2'))
+        host_cell = Transition(D('0.4'), D('10'))
+        # Probability is h.P + (c.P * r.P) = 0.4 + (0.6 * 0.2) = 0.52
+        # Expectation is (h.P * h.E + c.P * r.P * (c.E + r.E))
+        #                / (h.P + c.P * r.P)
+        # (0.4 * 10 + 0.6 * 0.2 * (8 + 2)) / 0.52 = 10
+        expected_intersection = Transition(D('0.52'), D('10'))
+
+        intersection = transform_trans_while_excluding_vertex(
+            column_trans, row_trans, host_cell)
+        self.assertEqual(intersection, expected_intersection)
 
 if __name__ == '__main__':
     unittest.main()
