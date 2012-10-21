@@ -3,7 +3,8 @@ import unittest
 from decimal import Decimal as D
 
 from beizer.models import (TransitionMatrix, Transition,
-                           transform_trans_while_excluding_vertex)
+                           transform_trans_while_excluding_vertex,
+                           transform_trans_while_excluding_loop)
 from beizer.exceptions import MatrixInitError, LoopExcludeError
 
 _ = None
@@ -62,6 +63,36 @@ class ExcludeFirstLoopTest(unittest.TestCase):
         self.assertEqual(repr(trans_matrix),
                          '[[None, (P=1, E=22)], [None, None]]')
 
+    def test_matrix_structure_after_horizontal_transitions_excluding(self):
+        b = Transition(D('0.4'), D('10'))
+        a = Transition(D('0.6'), D('20'))
+
+        f = Transition(D('0.4'), D('10'))
+        g = Transition(D('0.2'), D('5'))
+        d = Transition(D('0.4'), D('15'))
+
+        e = Transition(D('0.8'), D('5'))
+        z = Transition(D('0.2'), D('10'))
+
+        trans_matrix = TransitionMatrix([
+            [_, _, b, a],
+            [_, _, _, _],
+            [_, f, g, d],
+            [_, e, z, _],
+        ])
+
+        cell_3_2 = transform_trans_while_excluding_loop(transition=f, loop=g)
+        cell_3_4 = transform_trans_while_excluding_loop(transition=d, loop=g)
+        trans_matrix_after_excluding = TransitionMatrix([
+            [_, _, b, a],
+            [_, _, _, _],
+            [_, cell_3_2, _, cell_3_4],
+            [_, e, z, _],
+        ])
+
+        trans_matrix.exclude_first_loop()
+        self.assertEqual(repr(trans_matrix),
+                         repr(trans_matrix_after_excluding))
 
 class ExlcudeLastVertexTest(unittest.TestCase):
 
