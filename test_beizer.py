@@ -6,6 +6,7 @@ from beizer.models import (TransitionMatrix, Transition,
                            transform_trans_while_excluding_vertex,
                            transform_trans_while_excluding_loop)
 from beizer.exceptions import MatrixInitError, LoopExcludeError
+from beizer.core import reduce_matrix_size
 
 _ = None
 
@@ -205,6 +206,60 @@ class TransformTransitionWhileExcludingVertexTest(unittest.TestCase):
         intersection = transform_trans_while_excluding_vertex(
             column_trans, row_trans, host_cell)
         self.assertEqual(intersection, expected_intersection)
+
+
+class ReduceMatrixSizeTest(unittest.TestCase):
+
+    def test_matrix_has_one_loop_and_four_vertices(self):
+        b = Transition(D('0.4'), D('10'))
+        a = Transition(D('0.6'), D('20'))
+
+        f = Transition(D('0.4'), D('10'))
+        g = Transition(D('0.2'), D('5'))
+        d = Transition(D('0.4'), D('15'))
+
+        e = Transition(D('0.8'), D('5'))
+        z = Transition(D('0.2'), D('10'))
+
+        trans_matrix = TransitionMatrix([
+            [_, _, b, a],
+            [_, _, _, _],
+            [_, f, g, d],
+            [_, e, z, _],
+        ])
+        reduce_matrix_size(trans_matrix)
+
+        self.assertTrue(trans_matrix.has_only_source_and_drain())
+
+        trans_from_source_to_drain = trans_matrix._matrix[0][1]
+        self.assertEqual(trans_from_source_to_drain.probability, D('1'))
+
+    def test_matrix_has_four_loops_and_five_vertices(self):
+        a = Transition(D('0.15'), D('56'))
+        b = Transition(D('0.85'), D('112'))
+
+        c = Transition(D('0.05'), D('8'))
+        d = Transition(D('0.95'), D('16'))
+
+        e = Transition(D('0.05'), D('24'))
+        f = Transition(D('0.95'), D('48'))
+
+        g = Transition(D('0.90'), D('40'))
+        z = Transition(D('0.10'), D('20'))
+
+        trans_matrix = TransitionMatrix([
+            [a, _, b, _, _],
+            [_, _, _, _, _],
+            [_, _, c, d, _],
+            [_, _, _, e, f],
+            [_, g, _, _, z],
+        ])
+        reduce_matrix_size(trans_matrix)
+
+        self.assertTrue(trans_matrix.has_only_source_and_drain())
+
+        trans_from_source_to_drain = trans_matrix._matrix[0][1]
+        self.assertEqual(trans_from_source_to_drain.probability, D('1'))
 
 if __name__ == '__main__':
     unittest.main()
