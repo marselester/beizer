@@ -79,7 +79,7 @@ class TransitionMatrix(object):
 
     def loop_exists(self):
         """Returns True if loop exists in transition matrix."""
-        return self._index_of_first_loop() is None
+        return self._index_of_first_loop() is not None
 
     def exclude_first_loop(self):
         """Excludes loop from transition matrix."""
