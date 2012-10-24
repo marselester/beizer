@@ -63,9 +63,9 @@ class ExcludeFirstLoopTest(unittest.TestCase):
         trans_matrix = TransitionMatrix(matrix)
         trans_matrix.exclude_first_loop()
         # Probability is 1.0 = 0.4 / (1 - 0.6)
-        # Expectation is 22.0 = 7 + ((10 * 0.6) / (1 - 0.6))
+        # Resource is 22.0 = 7 + ((10 * 0.6) / (1 - 0.6))
         self.assertEqual(repr(trans_matrix),
-                         '[[None, (P=1, E=22)], [None, None]]')
+                         '[[None, (P=1, R=22)], [None, None]]')
 
     def test_matrix_structure_after_horizontal_transitions_excluding(self):
         b = Transition(D('0.4'), D('10'))
@@ -118,13 +118,13 @@ class ExcludeFirstLoopTest(unittest.TestCase):
         trans_matrix.exclude_first_loop()
 
         # Probability is f.P / (1 - g.P) = 0.4 / (1 - 0.2) = 0.5
-        # Expectation is f.E + (g.E * g.P) / (1 - g.P)
+        # Resource is f.R + (g.R * g.P) / (1 - g.P)
         # 10 + (5 * 0.2) / 0.8 = 11.25
         cell_3_2 = Transition(D('0.5'), D('11.25'))
         self.assertEqual(trans_matrix._matrix[2][1], cell_3_2)
 
         # Probability is d / (1 - g) = 0.4 / (1 - 0.2) = 0.5
-        # Expectation is d.E + (g.E * g.P) / (1 - g.P)
+        # Resource is d.R + (g.R * g.P) / (1 - g.P)
         # 15 + (5 * 0.2) / 0.8 = 16.25
         cell_3_4 = Transition(D('0.5'), D('16.25'))
         self.assertEqual(trans_matrix._matrix[2][3], cell_3_4)
@@ -186,7 +186,7 @@ class TransformTransitionWhileExcludingVertexTest(unittest.TestCase):
         column_trans = Transition(D('0.6'), D('20'))
         row_trans = Transition(D('0.8'), D('5'))
         # Probability is c.P * r.P = 0.6 * 0.8 = 0.48
-        # Expectation is c.E + r.E = 25
+        # Resource is c.R + r.R = 25
         expected_intersection = Transition(D('0.48'), D('25'))
 
         intersection = transform_trans_while_excluding_vertex(
@@ -198,7 +198,7 @@ class TransformTransitionWhileExcludingVertexTest(unittest.TestCase):
         row_trans = Transition(D('0.2'), D('2'))
         host_cell = Transition(D('0.4'), D('10'))
         # Probability is h.P + (c.P * r.P) = 0.4 + (0.6 * 0.2) = 0.52
-        # Expectation is (h.P * h.E + c.P * r.P * (c.E + r.E))
+        # Resource is (h.P * h.R + c.P * r.P * (c.R + r.R))
         #                / (h.P + c.P * r.P)
         # (0.4 * 10 + 0.6 * 0.2 * (8 + 2)) / 0.52 = 10
         expected_intersection = Transition(D('0.52'), D('10'))

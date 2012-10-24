@@ -8,33 +8,33 @@ class Transition(object):
     """Transition with probability in which system spend or allocate resource.
     """
 
-    def __init__(self, probability, expectation):
+    def __init__(self, probability, resource):
         """Initializes transition.
 
         Keyword arguments:
         probability -- probability of transition to vertex.
-        expectation -- expected value of resource which spend or allocate in
-        transition to vertex.
+        resource -- mathematical expectation of resource which spend or
+        allocate in transition to vertex.
 
         """
         self.probability = probability
-        self.expectation = expectation
+        self.resource = resource
 
     def __repr__(self):
-        return "(P={0}, E={1})".format(self.probability, self.expectation)
+        return "(P={0}, R={1})".format(self.probability, self.resource)
 
     def __getitem__(self, key):
         if key == 0:
             return self.probability
         elif key == 1:
-            return self.expectation
+            return self.resource
         else:
             raise IndexError('key has to be 0 for probability'
-                             ' or 1 for expectation')
+                             ' or 1 for resource')
 
     def __eq__(self, other):
         return (self.probability == other.probability and
-                self.expectation == other.expectation)
+                self.resource == other.resource)
 
 
 class TransitionMatrix(object):
@@ -64,12 +64,11 @@ class TransitionMatrix(object):
         If object does not contain two items then function returns None.
         """
         try:
-            probability, expectation = obj_with_two_items
+            probability, resource = obj_with_two_items
         except TypeError:
             transition = None
         else:
-            transition = Transition(probability=probability,
-                                    expectation=expectation)
+            transition = Transition(probability=probability, resource=resource)
         return transition
 
     def has_only_source_and_drain(self):
@@ -129,10 +128,10 @@ class TransitionMatrix(object):
 def transform_trans_while_excluding_loop(transition, loop):
     """Преобразует передачу ``transition`` при исключении петли."""
     probability = transition.probability / (1 - loop.probability)
-    expectation = transition.expectation + (
-        (loop.expectation * loop.probability) / (1 - loop.probability)
+    resource = transition.resource + (
+        (loop.resource * loop.probability) / (1 - loop.probability)
     )
-    return Transition(probability=probability, expectation=expectation)
+    return Transition(probability=probability, resource=resource)
 
 
 def transform_trans_while_excluding_vertex(column_trans, row_trans,
@@ -140,17 +139,17 @@ def transform_trans_while_excluding_vertex(column_trans, row_trans,
     """Преобразует передачу ``host_cell`` при исключении вершины."""
     if host_cell is None:
         host_cell_probability = 0
-        host_cell_expectation = 0
+        host_cell_resource = 0
     else:
         host_cell_probability = host_cell.probability
-        host_cell_expectation = host_cell.expectation
+        host_cell_resource = host_cell.resource
     probability = (column_trans.probability * row_trans.probability
                    + host_cell_probability)
-    expectation = (
+    resource = (
         (
-            host_cell_probability * host_cell_expectation
+            host_cell_probability * host_cell_resource
             + column_trans.probability * row_trans.probability
-            * (column_trans.expectation + row_trans.expectation)
+            * (column_trans.resource + row_trans.resource)
         ) / probability
     )
-    return Transition(probability=probability, expectation=expectation)
+    return Transition(probability=probability, resource=resource)
