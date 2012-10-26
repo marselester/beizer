@@ -4,4 +4,4 @@ python:
   - "2.7"
   - "3.3"
   - "pypy"
-script: python test_beizer.py
+script: python tests.py
