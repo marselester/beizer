@@ -8,5 +8,6 @@ setup(
     author='Marsel Mavletkulov',
     author_email='marselester@ya.ru',
     url='https://github.com/marselester/beizer/',
-    description="Illustration of Boris Beizer's algorithm"
+    description="Illustration of Boris Beizer's algorithm",
+    long_description=open('README.rst').read()
 )
