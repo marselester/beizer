@@ -4,7 +4,8 @@ from decimal import Decimal as D
 
 from beizer.models import (TransitionMatrix, Transition,
                            transform_trans_while_excluding_vertex,
-                           transform_trans_while_excluding_loop)
+                           transform_trans_while_excluding_loop,
+                           check_sum_of_probabilities)
 from beizer.exceptions import MatrixInitError, LoopExcludeError
 from beizer.core import reduce_matrix_size
 
@@ -38,14 +39,20 @@ class MatrixInitTest(unittest.TestCase):
         ]
         self.assertEqual(repr(TransitionMatrix(matrix)), '[[None]]')
 
-    def test_sum_of_probabilities_is_equal_to_one(self):
-        pass
+    def test_sum_of_probabilities_is_not_equal_to_one(self):
+        a = (D('0.6'), 10)
+        b = (D('0.39'), 7)
+        matrix = [
+            [a, b],
+            [_, _]
+        ]
+        self.assertRaises(MatrixInitError, TransitionMatrix, (matrix))
 
 
 class ExcludeFirstLoopTest(unittest.TestCase):
 
     def test_matrix_2x2_has_not_got_loop(self):
-        a = (0.4, 7)
+        a = (1, 7)
         matrix = [
             [_, a],
             [_, _]
@@ -135,8 +142,30 @@ class ExcludeFirstLoopTest(unittest.TestCase):
     def test_values_after_vertical_transitions_excluding(self):
         pass
 
-    def test_sum_of_probabilities_is_equal_to_one(self):
-        pass
+
+    def test_sum_of_probabilities_is_equal_to_one_or_zero(self):
+        b = Transition(D('0.4'), D('10'))
+        a = Transition(D('0.6'), D('20'))
+
+        f = Transition(D('0.4'), D('10'))
+        g = Transition(D('0.2'), D('5'))
+        d = Transition(D('0.4'), D('15'))
+
+        e = Transition(D('0.8'), D('5'))
+        z = Transition(D('0.2'), D('10'))
+
+        trans_matrix = TransitionMatrix([
+            [_, _, b, a],
+            [_, _, _, _],
+            [_, f, g, d],
+            [_, e, z, _],
+        ])
+        trans_matrix.exclude_first_loop()
+
+        all_rows_are_ok_after_excluding_first_loop = all(
+            check_sum_of_probabilities(row) for row in trans_matrix._matrix
+        )
+        self.assertTrue(all_rows_are_ok_after_excluding_first_loop)
 
 
 class ExlcudeLastVertexTest(unittest.TestCase):
@@ -176,8 +205,28 @@ class ExlcudeLastVertexTest(unittest.TestCase):
         self.assertEqual(repr(trans_matrix),
                          repr(trans_matrix_after_excluding))
 
-    def test_sum_of_probabilities_is_equal_to_one(self):
-        pass
+    def test_sum_of_probabilities_is_equal_to_one_or_zero(self):
+        b = Transition(D('0.4'), D('10'))
+        a = Transition(D('0.6'), D('20'))
+
+        f = Transition(D('0.5'), D('10'))
+        d = Transition(D('0.5'), D('15'))
+
+        e = Transition(D('0.8'), D('5'))
+        z = Transition(D('0.2'), D('10'))
+
+        trans_matrix = TransitionMatrix([
+            [_, _, b, a],
+            [_, _, _, _],
+            [_, f, _, d],
+            [_, e, z, _]
+        ])
+        trans_matrix.exclude_last_vertex()
+
+        all_rows_are_ok_after_excluding_first_loop = all(
+            check_sum_of_probabilities(row) for row in trans_matrix._matrix
+        )
+        self.assertTrue(all_rows_are_ok_after_excluding_first_loop)
 
 
 class TransformTransitionWhileExcludingVertexTest(unittest.TestCase):
@@ -234,6 +283,11 @@ class ReduceMatrixSizeTest(unittest.TestCase):
         trans_from_source_to_drain = trans_matrix._matrix[0][1]
         self.assertEqual(trans_from_source_to_drain.probability, D('1'))
 
+        all_rows_are_ok_after_excluding_first_loop = all(
+            check_sum_of_probabilities(row) for row in trans_matrix._matrix
+        )
+        self.assertTrue(all_rows_are_ok_after_excluding_first_loop)
+
     def test_matrix_has_four_loops_and_five_vertices(self):
         a = Transition(D('0.15'), D('56'))
         b = Transition(D('0.85'), D('112'))
@@ -260,6 +314,11 @@ class ReduceMatrixSizeTest(unittest.TestCase):
 
         trans_from_source_to_drain = trans_matrix._matrix[0][1]
         self.assertEqual(trans_from_source_to_drain.probability, D('1'))
+
+        all_rows_are_ok_after_excluding_first_loop = all(
+            check_sum_of_probabilities(row) for row in trans_matrix._matrix
+        )
+        self.assertTrue(all_rows_are_ok_after_excluding_first_loop)
 
 if __name__ == '__main__':
     unittest.main()

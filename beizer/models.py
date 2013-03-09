@@ -53,7 +53,14 @@ class TransitionMatrix(object):
             for column_src in row_src:
                 transition = self._extract_transition(column_src)
                 row_of_transitions.append(transition)
-            self._matrix.append(row_of_transitions)
+
+            if check_sum_of_probabilities(row_of_transitions):
+                self._matrix.append(row_of_transitions)
+            else:
+                raise MatrixInitError(
+                    'sum of probabilities has to be equal to zero or one',
+                    row_of_transitions
+                )
 
     def __repr__(self):
         return repr(self._matrix)
@@ -153,3 +160,8 @@ def transform_trans_while_excluding_vertex(column_trans, row_trans,
         ) / probability
     )
     return Transition(probability=probability, resource=resource)
+
+
+def check_sum_of_probabilities(row):
+    sum_prob = sum(transition.probability for transition in row if transition)
+    return sum_prob == 0 or sum_prob == 1
