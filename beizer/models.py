@@ -98,10 +98,11 @@ class TransitionMatrix(object):
         self._matrix[row_loop][column_loop] = None
         # Для исключения петли необходимо поделить вероятности передач,
         # которые находятся на одной строке с петлей, на вероятность петли.
-        for (trans_index, trans) in enumerate(self._matrix[row_loop]):
-            if trans is not None:
-                trans_ = transform_trans_while_excluding_loop(trans, loop)
-                self._matrix[row_loop][trans_index] = trans_
+        if any(self._matrix[row_loop]):
+            for (trans_index, trans) in enumerate(self._matrix[row_loop]):
+                if trans is not None:
+                    trans_ = transform_trans_while_excluding_loop(trans, loop)
+                    self._matrix[row_loop][trans_index] = trans_
 
     def exclude_last_vertex(self):
         """Excludes last vertex from transition matrix."""

@@ -137,11 +137,31 @@ class ExcludeFirstLoopTest(unittest.TestCase):
         self.assertEqual(trans_matrix._matrix[2][3], cell_3_4)
 
     def test_matrix_structure_after_vertical_transitions_excluding(self):
-        pass
+        b = Transition(D('0.4'), D('10'))
+        a = Transition(D('0.6'), D('20'))
 
-    def test_values_after_vertical_transitions_excluding(self):
-        pass
+        g = Transition(D('1'), D('5'))
 
+        e = Transition(D('0.8'), D('5'))
+        z = Transition(D('0.2'), D('10'))
+
+        trans_matrix = TransitionMatrix([
+            [_, _, b, a],
+            [_, _, _, _],
+            [_, _, g, _],
+            [_, e, z, _],
+        ])
+
+        trans_matrix_after_excluding = TransitionMatrix([
+            [_, _, b, a],
+            [_, _, _, _],
+            [_, _, _, _],
+            [_, e, z, _],
+        ])
+
+        trans_matrix.exclude_first_loop()
+        self.assertEqual(repr(trans_matrix),
+                         repr(trans_matrix_after_excluding))
 
     def test_sum_of_probabilities_is_equal_to_one_or_zero(self):
         b = Transition(D('0.4'), D('10'))
